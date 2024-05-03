@@ -1,7 +1,5 @@
-import javafx.animation.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.util.Duration;
 
 public class DynamicBall extends Circle {
 
@@ -9,29 +7,20 @@ public class DynamicBall extends Circle {
 /* >>>> class attributes <<<< */
 
 
-    private static final double GRAVITY = 0.3; // Acceleration due to gravity
-    private static final double X_FRICTION = 0.99; // floor (x-axis) friction
-    private static final double ENERGY_LOSS = 0.7; // energy loss due to collision
+    // constant attributes
+    private static final double GRAVITY = 0.3; // acceleration due to gravity
+    private static final double X_FRICTION = 0.99; // x-axis friction
+    public static final double ENERGY_LOSS = 0.7; // energy loss
 
+    // velocity attributes
     private double Vx = 0.0;
     private double Vy = 0.0;
 
-
-    private double lowerSceneBorder;
-    private double upperSceneBorder;
-    private double leftSceneBorder;
-    private double rightSceneBorder;
-
-    private double xi;
-    private double yi;
-    private double xf;
-    private double yf;
-
-
-
-
-
-
+    // scene borders relative to the class
+    private static double lowerSceneBorder;
+    private static double upperSceneBorder;
+    private static double leftSceneBorder;
+    private static double rightSceneBorder;
 
 
 /* >>>> constructors <<<< */
@@ -51,7 +40,6 @@ public class DynamicBall extends Circle {
     public DynamicBall(double v, double v1, double v2, Paint paint) {
         super(v, v1, v2, paint);
     }
-
 
 
 /* >>>> getters and setters <<<< */
@@ -80,12 +68,11 @@ public class DynamicBall extends Circle {
     }
     public void setVelocity(double Vx, double Vy) {
         this.Vx = Vx;
-        this.Vy = Vy;
-        enableMotion();
     }
-
-
-
+    public void setVelocity(double xi, double yi, double xf, double yf) {
+        Vx = (xf - xi) * -0.05;
+        Vy = (yf - yi) * 0.05;
+    }
 
 
 /* >>>> Update position function <<<< */
@@ -93,95 +80,57 @@ public class DynamicBall extends Circle {
 
     public void updatePosition() {
 
-        // Apply gravity
+
+        // add gravity and friction
         Vy += GRAVITY;
         Vx *= X_FRICTION;
 
-        if (Math.abs(Vx) < 0.1) Vx = 0.0;
-        if (Math.abs(Vy) < 0.3) Vy = 0.0;
 
+        // to set velocity to zero at a certain (negligible) value
+        if (Math.abs(Vx) < 0.2) setVx(0);
+        if (Math.abs(Vy) < 0.2) setVy(0);
 
-        // Update position
+        // update object's position
         this.setCenterX(this.getCenterX() + Vx);
         this.setCenterY(this.getCenterY() + Vy);
 
 
-        // Bounce off left walls
+        // Bounce off scene borders
         if (this.getCenterX() - this.getRadius() <= leftSceneBorder) {
             Vx = -Vx * ENERGY_LOSS;
             this.setCenterX(leftSceneBorder + this.getRadius());
         }
-        // Bounce off right walls
         if (this.getCenterX() + this.getRadius() >= rightSceneBorder) {
             Vx = -Vx * ENERGY_LOSS;
             this.setCenterX(rightSceneBorder - this.getRadius());
         }
-        // Bounce off the floor
         if (this.getCenterY() + this.getRadius() >= lowerSceneBorder) {
             this.setCenterY(lowerSceneBorder - this.getRadius());
-            Vy = -Math.abs(Vy)  * ENERGY_LOSS; // Reverse vertical velocity with friction
+            Vy = -Math.abs(Vy)  * ENERGY_LOSS;
         }
-        // Bounce off the ceiling
         if (this.getCenterY() - this.getRadius() <= upperSceneBorder) {
             this.setCenterY(upperSceneBorder + this.getRadius());
-            Vy = Math.abs(Vy)  * ENERGY_LOSS; // Reverse vertical velocity with friction
+            Vy = Math.abs(Vy)  * ENERGY_LOSS;
         }
 
     }
 
 
 
+/* >>>> ..... <<<< */
 
 
 
-/* >>>> ....... <<<< */
+/* >>>> ..... <<<< */
 
 
 
-
-/* >>>> ....... <<<< */
-
+/* >>>> ..... <<<< */
 
 
 
-
-/* >>>> enable motion function <<<< */
-
-
-    public void enableMotion() {
-        // Animation Timer to update the ball's position
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                //System.out.println(Vy);
-                updatePosition();
-            }
-        };
-        timer.start();
-    }
+/* >>>> ..... <<<< */
 
 
-/* >>>> .......... <<<< */
-
-
-    public void setInitialMousePosition(double xi, double yi) {
-        this.xi = xi;
-        this.yi = yi;
-    }
-
-    public void setFinalMousePosition(double xf, double yf) {
-        this.xf = xf;
-        this.yf = yf;
-        Vx = (xf - xi) * -0.05;
-        Vy = (yf - yi) * 0.05;
-        enableMotion();
-    }
-
-
-
-
-
-
-    /* >>>> ..... <<<< */
 
 }
