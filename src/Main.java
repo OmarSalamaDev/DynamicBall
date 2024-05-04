@@ -91,7 +91,7 @@ public class Main extends Application {
                     vxB_ = 2*mA*vxA/(mA+mB)-(mA-mB)*vxB/(mA+mB);
                     vyB_ = 2*mA*vyA/(mA+mB)-(mA-mB)*vyB/(mA+mB);
 
-                    // check for overlying
+                    // check for overlapping 
                     if (Math.abs(Math.sqrt(Math.pow((A.getCenterX() - B.getCenterX()), 2) + Math.pow((A.getCenterY() - B.getCenterY()), 2)) - (A.getRadius() + B.getRadius())) > 0) {
 
                         // set separation to prevent overlapping
